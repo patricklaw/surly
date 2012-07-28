@@ -1,5 +1,8 @@
 .DS_Store
 
+# Docs
+docs/_*
+
 *.py[co]
 
 # Packages

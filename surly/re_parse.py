@@ -7,7 +7,8 @@ class ReverseParseError(Exception):
 
 
 def _recursive_parse(ast, group_index_map, kwargs):
-    '''This relies heavily on the implementation of the standard 
+    '''
+    This relies heavily on the implementation of the standard 
     library module sre_parse, particularly the functions parse and _parse.
 
     Regular expressions with named capture groups are supported.
@@ -50,8 +51,14 @@ def _recursive_parse(ast, group_index_map, kwargs):
 
 
 def reverse(re_str, kwargs):
-    '''Substitute keyword values into their respective named capture groups
-    within an URL regular expression.
+    '''
+    `reverse` interpolates `kwargs` values into their respective named \
+    capture groups within `re_str`.
+
+    :param re_str: A Python string (raw strings are recommended) \
+    representing the regular expression to be reversed.
+    :param kwargs: A dictionary mapping capture group names to the \
+    value that should be interpolated into the capture expression.
     '''
 
     r = re.compile(re_str)
