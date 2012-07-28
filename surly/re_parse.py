@@ -2,6 +2,10 @@ import sre_parse
 import re
 
 
+class ReverseParseError(Exception):
+    pass
+
+
 def _recursive_parse(ast, group_index_map, kwargs):
     '''This relies heavily on the implementation of the standard 
     library module sre_parse, particularly the functions parse and _parse.
@@ -33,8 +37,13 @@ def _recursive_parse(ast, group_index_map, kwargs):
             else:
                 # Otherwise, we've found a capture group.  Fill in our value.
                 s += kwargs[group_index_map[subpattern_index]]
+        elif item_type == 'at' and item[1] == 'at_end':
+            pass
+        elif item_type == 'at' and item[1] == 'at_beginning':
+            pass
         else:
-            assert False, "Unsupported regex stuff!"
+            raise ReverseParseError('Unsupported regex expression: %s'
+                                    % item_type)
 
     return s
 
@@ -44,7 +53,7 @@ def reverse(re_str, kwargs):
     '''Substitute keyword values into their respective named capture groups
     within an URL regular expression.
     '''
-    
+
     r = re.compile(re_str)
     ast = sre_parse.parse(re_str)
     group_indices = r.groupindex
