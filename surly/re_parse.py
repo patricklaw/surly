@@ -5,8 +5,7 @@ import re
 class ReverseParseError(Exception):
     pass
 
-
-def _recursive_parse(ast, group_index_map, kwargs):
+def _recursive_parse(ast, group_index_map):
     '''
     This relies heavily on the implementation of the standard 
     library module sre_parse, particularly the functions parse and _parse.
@@ -34,10 +33,11 @@ def _recursive_parse(ast, group_index_map, kwargs):
 
             if subpattern_index is None:
                 # This is a non-capturing group.  Parse it out recursively.
-                s += _recursive_parse(subpattern[1], group_index_map, kwargs)
+                s += _recursive_parse(subpattern[1], group_index_map)
             else:
                 # Otherwise, we've found a capture group.  Fill in our value.
-                s += kwargs[group_index_map[subpattern_index]]
+                # s += kwargs[group_index_map[subpattern_index]]
+                s += '{%s}' % group_index_map[subpattern_index]
         elif item_type == 'at' and item[1] == 'at_end':
             pass
         elif item_type == 'at' and item[1] == 'at_beginning':
@@ -49,6 +49,23 @@ def _recursive_parse(ast, group_index_map, kwargs):
     return s
 
 
+def reverse_template(re_str):
+    '''
+    `reverse_template` generates a python string formatting template \
+    based on the capture groups in the regex ``re_str``.
+
+    :param re_str: A Python string (raw strings are recommended) \
+    representing the regular expression to be reversed.
+    '''
+
+    r = re.compile(re_str)
+    ast = sre_parse.parse(re_str)
+    group_indices = r.groupindex
+    group_index_map = dict((index, group) 
+                           for (group, index) in r.groupindex.items())
+
+    t = _recursive_parse(ast, group_index_map)
+    return t
 
 def reverse(re_str, kwargs):
     '''
@@ -67,7 +84,7 @@ def reverse(re_str, kwargs):
     group_index_map = dict((index, group) 
                            for (group, index) in r.groupindex.items())
 
-    s = _recursive_parse(ast, group_index_map, kwargs)
-
+    t = _recursive_parse(ast, group_index_map)
+    s = t.format(**kwargs)
     return s
 
