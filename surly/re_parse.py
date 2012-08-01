@@ -93,6 +93,10 @@ def _recursive_parse(ast, group_index_map, *reversers):
             pass
         elif item_type == 'at' and item[1] == 'at_beginning':
             pass
+        # elif item_type == 'max_repeat':
+        #     pass
+        # elif item_type == 'any':
+        #     pass
         else:
             raise ReverseParseError('Unsupported regex expression: %s'
                                     % item_type)

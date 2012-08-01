@@ -57,6 +57,11 @@ class ReverseTestCase(unittest.TestCase):
         (r'123(?:abc(?P<cap1>.)efg)456',
          {'cap1': 'cap1_val'},
          r'123abccap1_valefg456'),
+        
+        # max repetitions
+        (r'(?P<cap1>a{16})', 
+         {'cap1': 'cap1_val'}, 
+         r'cap1_val'),
 
     ]
 
@@ -76,6 +81,7 @@ class ReverseTestCase(unittest.TestCase):
                 out = reverse(re_str, kwargs)
                 self.assertEqual(out, expected)
             except Exception as e:
+                print re_str, out
                 self.assertEqual(type(e), expected)
 
 

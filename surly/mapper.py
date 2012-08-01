@@ -47,12 +47,13 @@ class url(object):
     ''' class for defining urls in the surly dsl.  Shouldn't be used 
         independently.
     '''
-    def __init__(self, pattern, target, name=None):
+    def __init__(self, pattern, target, extra_args=None, name=None):
         ''' :param pattern: The URL pattern. Use named matching groups
             :type pattern: regular expression as a string
             :param target: An object which the url is mapped to.  
             :type target: Determined by the adapter being used.
         '''
+        self.extra_args = extra_args
         self.name = name
         self.pattern = pattern
         self.target = target
