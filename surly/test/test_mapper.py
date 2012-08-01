@@ -39,3 +39,10 @@ class MapperTestCase(unittest.TestCase):
 
         expected = '''Mapper = function(name, args){var mapping = {"home":function(fields){return ""+"/";},"foo":function(fields){return ""+"/"+"f"+"o"+"o"+"/"+fields["foo"];},"foos":function(fields){return ""+"/"+"f"+"o"+"o";}};return mapping[name](args);};'''
         assert expected == m.js_mapper('Mapper'), m.js_mapper('Mapper')
+    def test_replacements(self):
+        m = Mapper([
+            url(r'^/{home}$', None, name='home1'),
+        ], replacements={'home' : 'foo'})
+        m.urls[0].apply_replacements(**{'home':'bar'})
+        expected = '/foo'
+        assert expected == m.reverse('home1')

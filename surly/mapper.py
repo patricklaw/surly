@@ -7,13 +7,16 @@ class Mapper(object):
     ''' The mapper is the framework-agnostic way of defining 
         URL mappings.  
     '''
-    def __init__(self, urls):
+    def __init__(self, urls, replacements={}):
         ''' :param urls: a list of ``url`` objects.  See ``url`` \
             for details
         '''
         self.urls = urls
         self.reverse_patterns = {}
+
         for u in urls:
+            if replacements:
+                u.apply_replacements(**replacements)
             if not u.name:
                 continue
             if u.name in self.reverse_patterns:
@@ -57,9 +60,20 @@ class url(object):
         self.name = name
         self.pattern = pattern
         self.target = target
-        self.js_pattern = reverse_template_js(pattern)
-        self.py_pattern = reverse_template(pattern)
-        self.group_map = reverse_group_map(pattern)
+        self.replacements_applied = False
+        self._compile()
+
+    def apply_replacements(self, **replacements):
+        if self.replacements_applied:
+            return
+        self.pattern = self.pattern.format(**replacements)
+        self._compile()
+        self.replacements_applied = True
+
+    def _compile(self):
+        self.js_pattern = reverse_template_js(self.pattern)
+        self.py_pattern = reverse_template(self.pattern)
+        self.group_map = reverse_group_map(self.pattern)
     def reverse(self, **kwargs):
         ''' python-based reversal for this URL
         '''
