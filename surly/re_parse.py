@@ -157,3 +157,10 @@ def reverse(re_str, kwargs):
     s = python_reverser.value().format(**kwargs)
     return s
 
+def reverse_group_map(re_str):
+    r = re.compile(re_str)
+    ast = sre_parse.parse(re_str)
+    group_indices = r.groupindex
+    group_index_map = dict((index, group) 
+                           for (group, index) in r.groupindex.items())
+    return group_index_map
