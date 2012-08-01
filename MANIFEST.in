@@ -1,0 +1,2 @@
+recursive-include surly *.py *.bash
+include docs/*
