@@ -98,11 +98,22 @@ def _recursive_parse(ast, group_index_map, *reversers):
                                     % item_type)
 
 def reverse_template(re_str):
+    ''' Turn a regular expression into a python format string
+
+        :param re_str: the regular expression
+        :type re_str: string
+    '''
     reverser = PythonReverser()
     _reverse_template(re_str, reverser)
     return reverser.value()
 
 def reverse_template_js(re_str):
+    ''' Turn a regular expression into an anonymous JS function which
+        can be used to generate URLs
+
+        :param re_str: the regular expression
+        :type re_str: string
+    '''
     reverser = JavascriptReverser()
     _reverse_template(re_str, reverser)
     return reverser.value()
