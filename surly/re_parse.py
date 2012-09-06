@@ -93,8 +93,12 @@ def _recursive_parse(ast, group_index_map, *reversers):
             pass
         elif item_type == 'at' and item[1] == 'at_beginning':
             pass
-        # elif item_type == 'max_repeat':
-        #     pass
+        elif item_type == 'max_repeat':
+            min_repeat = item[1][0]
+            max_repeat = item[1][1]
+            subpattern = item[1][2]
+            for i in range(min_repeat):
+                _recursive_parse(subpattern, group_index_map, *reversers)
         # elif item_type == 'any':
         #     pass
         else:
