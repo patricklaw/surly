@@ -1,7 +1,7 @@
 import re
 
 class SurlyTornadoMixin(object):
-    def reverse_url(self, name, **kwargs):
+    def reverse(self, name, **kwargs):
         """Returns a URL path for handler named `name`
 
         The handler must be added to the application as a 
@@ -11,8 +11,8 @@ class SurlyTornadoMixin(object):
         URLSpec regex. They will be converted to strings if necessary, 
         encoded as utf8, and url-escaped.
         """
-        if name in self.named_handlers:
-            return self.named_handlers[name].reverse(*args)
+        if name in self.application.named_handlers:
+            return self.application.named_handlers[name].reverse(**kwargs)
         raise KeyError("%s not found in named urls" % name)
 
 class TornadoUrlSpec(object):
