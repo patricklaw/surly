@@ -7,21 +7,30 @@ class Mapper(object):
     ''' The mapper is the framework-agnostic way of defining 
         URL mappings.  
     '''
-    def __init__(self, urls, replacements={}):
+    def __init__(self, urls, replacements={}, prefix=''):
         ''' :param urls: a list of ``url`` objects.  See ``url`` \
             for details
         '''
+        self.replacements = replacements
         self.urls = urls
         self.reverse_patterns = {}
+        self._add_urls(urls, prefix=prefix)
 
+    def _add_urls(self, urls, prefix=''):
         for u in urls:
-            if replacements:
-                u.apply_replacements(**replacements)
+            if isinstance(u, include):
+                self._add_urls(u.urls, prefix=prefix+u.prefix)
+                continue
+            print prefix
+            u.apply_prefix(prefix)
+            if self.replacements:
+                u.apply_replacements(**self.replacements)
             if not u.name:
                 continue
             if u.name in self.reverse_patterns:
                 raise MapperError('Duplicate reversal name: %s' % u.name)
             self.reverse_patterns[u.name] = u
+
     def js_mapper(self, var_name):
         ''' Return a JS function which is the equivalent of the python 
             reverse mapper.  The reverse function is assigned to
@@ -69,7 +78,9 @@ class url(object):
         self.pattern = self.pattern.format(**replacements)
         self._compile()
         self.replacements_applied = True
-
+    def apply_prefix(self, prefix):
+        self.pattern = prefix + self.pattern
+        self._compile()
     def _compile(self):
         self.js_pattern = reverse_template_js(self.pattern)
         self.py_pattern = reverse_template(self.pattern)
@@ -79,4 +90,10 @@ class url(object):
         '''
         return self.py_pattern.format(**kwargs)
 
+class include(object):
+    def __init__(self, prefix, urls):
+        assert not isinstance(urls, Mapper), ('Mappers cannot currently be ' 
+                                              'passed into include()')
+        self.urls = urls
+        self.prefix = prefix
 

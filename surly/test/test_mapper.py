@@ -2,7 +2,7 @@ from nose.tools import *
 
 import unittest
 
-from surly.mapper import Mapper, url, MapperError
+from surly.mapper import Mapper, url, MapperError, include
 
 class MapperTestCase(unittest.TestCase):
     m = Mapper([
@@ -24,6 +24,16 @@ class MapperTestCase(unittest.TestCase):
             url(r'^/$', None, name='home'),
             url(r'^/home$', None, name='home'),
         ])
+
+    def test_prefix(self):
+        app_urls = [ url(r'/home', None),
+                     url(r'/foo', None, name='foo')]
+        mapper = Mapper([
+                        url(r'^/$', None),
+                        include('/app', app_urls),
+                        url('help', None),
+                        ])
+        assert mapper.reverse('foo') == '/app/foo', mapper.reverse('foo')
     
     @raises(MapperError)
     def test_no_pattern(self):
