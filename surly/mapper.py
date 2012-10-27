@@ -12,7 +12,7 @@ class Mapper(object):
             for details
         '''
         self.replacements = replacements
-        self.urls = urls
+        self.urls = []
         self.reverse_patterns = {}
         self._add_urls(urls, prefix=prefix)
 
@@ -22,6 +22,7 @@ class Mapper(object):
                 self._add_urls(u.urls, prefix=prefix+u.prefix)
                 continue
             u.apply_prefix(prefix)
+            self.urls.append(u)
             if self.replacements:
                 u.apply_replacements(**self.replacements)
             if not u.name:
