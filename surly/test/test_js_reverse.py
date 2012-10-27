@@ -14,7 +14,7 @@ class JSTestCase(unittest.TestCase):
         assert value == expected, value
     def test_values(self):
         value = reverse_template_js(r'(?P<foo>\d+)aa')
-        expected = '''function(fields){return ""+fields["foo"]+"a"+"a";}'''
+        expected = '''function(fields){return ""+fields["foo"]+"aa";}'''
         print '>', expected, '<'
         print '>', value, '<'
         assert value == expected, value

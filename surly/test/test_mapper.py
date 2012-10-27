@@ -37,7 +37,7 @@ class MapperTestCase(unittest.TestCase):
             url(r'^/foo/(?P<foo>\d+)$', None, name='foo'),
         ])
 
-        expected = '''Mapper = function(name, args){var mapping = {"home":function(fields){return ""+"/";},"foo":function(fields){return ""+"/"+"f"+"o"+"o"+"/"+fields["foo"];},"foos":function(fields){return ""+"/"+"f"+"o"+"o";}};return mapping[name](args);};'''
+        expected = '''Mapper = function(name, args){var mapping = {"home":function(fields){return ""+"/";},"foo":function(fields){return ""+"/foo/"+fields["foo"];},"foos":function(fields){return ""+"/foo";}};return mapping[name](args);};'''
         assert expected == m.js_mapper('Mapper'), m.js_mapper('Mapper')
     def test_replacements(self):
         m = Mapper([

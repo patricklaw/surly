@@ -33,14 +33,18 @@ class JavascriptReverser(object):
     '''
     def __init__(self):
         self.s = ''
+        self.last_literal = False
     def add_literal(self, char):
         ''' Append a literal character to the JS expression.  The function 
             handles single and double quotes.
         '''
         if char == '"':
             self.s += "+'%s'" % char
+        elif self.last_literal:
+            self.s = self.s[:-1] + char + '"'
         else:
             self.s += '+"%s"' % char
+        self.last_literal = True
     def add_named_group(self, name):
         ''' Add a named group to the JS expression, having it append
             fields["name"]
@@ -48,6 +52,7 @@ class JavascriptReverser(object):
             :param name: the name of the capture group
             :type name: string
         '''
+        self.last_literal = False
         self.s += '+fields["%s"]' % name
     def value(self):
         ''' Returns the anonymous JS function built up over the course of 
