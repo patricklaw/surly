@@ -21,7 +21,6 @@ class Mapper(object):
             if isinstance(u, include):
                 self._add_urls(u.urls, prefix=prefix+u.prefix)
                 continue
-            print prefix
             u.apply_prefix(prefix)
             if self.replacements:
                 u.apply_replacements(**self.replacements)
