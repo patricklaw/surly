@@ -78,9 +78,13 @@ class url(object):
         self.pattern = self.pattern.format(**replacements)
         self._compile()
         self.replacements_applied = True
+    _prefix_applied = False
     def apply_prefix(self, prefix):
+        if self._prefix_applied:
+            return
         self.pattern = prefix + self.pattern
         self._compile()
+        self._prefix_applied = True
     def _compile(self):
         self.js_pattern = reverse_template_js(self.pattern)
         self.py_pattern = reverse_template(self.pattern)
