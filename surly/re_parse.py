@@ -6,15 +6,19 @@ class ReverseParseError(Exception):
     pass
 
 class PythonReverser(object):
-    ''' Python format string reverser.  Generates a python format
-        string which will produce a URL.'''
+    '''
+    Python format string reverser.  Generates a python format string
+    which will produce a URL.
+    '''
 
     def __init__(self):
         self.s = ''
+
     def add_literal(self, char):
         ''' Append a literal character to the format string
         '''
         self.s += char
+
     def add_named_group(self, name):
         ''' Add a variable to the format string group to the JS expression 
             (e.g. {name})
@@ -23,17 +27,21 @@ class PythonReverser(object):
             :type name: string
         '''
         self.s += '{%s}' % name
+    
     def value(self):
         return self.s
 
 class JavascriptReverser(object):
-    ''' Super-quick javascript reverser.  Generates an anonymous function 
-        which can take an object as a parameter and produce a URL.  Since URLs
-        are not user generated, there is no effort to stop cross-site scripting
+    ''' 
+    Super-quick javascript reverser.  Generates an anonymous function
+    which can take an object as a parameter and produce a URL. Since
+    URLs are not user generated, there is no effort to stop cross-site
+    scripting
     '''
     def __init__(self):
         self.s = ''
         self.last_literal = False
+
     def add_literal(self, char):
         ''' Append a literal character to the JS expression.  The function 
             handles single and double quotes.
@@ -45,6 +53,7 @@ class JavascriptReverser(object):
         else:
             self.s += '+"%s"' % char
         self.last_literal = True
+
     def add_named_group(self, name):
         ''' Add a named group to the JS expression, having it append
             fields["name"]
@@ -54,6 +63,7 @@ class JavascriptReverser(object):
         '''
         self.last_literal = False
         self.s += '+fields["%s"]' % name
+
     def value(self):
         ''' Returns the anonymous JS function built up over the course of 
             parsing
