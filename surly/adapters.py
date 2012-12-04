@@ -19,12 +19,15 @@ class TornadoUrlSpec(object):
     def __init__(self, url):
         self.url = url
         self.regex = re.compile(self.url.pattern)
+
     @property
     def kwargs(self):
         return self.url.extra_args or {}
+
     @property
     def handler_class(self):
         return self.url.target
+
     @property
     def name(self):
         return self.url.name
@@ -33,8 +36,8 @@ class TornadoUrlSpec(object):
         return self.url.reverse(**kwargs)
 
 def wrap_tornado(mapper):
-    ''' Turn the surly url objects objects which works
-        with Tornado
+    '''
+    Turn the surly url objects into objects which work with Tornado
     '''
     return [TornadoUrlSpec(url) for url in mapper.urls]
 

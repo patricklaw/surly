@@ -43,10 +43,17 @@ class ReverseTestCase(unittest.TestCase):
          {'cap1': 'cap1_val'},
          sre_constants.error),
 
-        # Repeats are not supported outside of named captures
+        # Repeats are reversed as "conservatively" as possible
         (r'(?P<cap1>.)+',
          {'cap1': 'cap1_val'},
-         ReverseParseError),
+         u'cap1_val'),
+
+        # Even though repeated capture groups end up overwriting
+        # previous results normally, we still conservatively
+        # repeat the capture as few times as possible
+        (r'(?P<cap1>.){2,6}',
+         {'cap1': 'cap1_val'},
+         u'cap1_valcap1_val'),
 
         # A non-capturing group with literals
         (r'(?:abc)',
@@ -71,6 +78,8 @@ class ReverseTestCase(unittest.TestCase):
             try:
                 out = reverse(re_str, kwargs)
                 self.assertEqual(out, expected)
+            except AssertionError:
+                raise
             except Exception as e:
                 self.assertEqual(type(e), expected)
 
@@ -80,6 +89,8 @@ class ReverseTestCase(unittest.TestCase):
             try:
                 out = reverse(re_str, kwargs)
                 self.assertEqual(out, expected)
+            except AssertionError:
+                raise
             except Exception as e:
                 print re_str, out
                 self.assertEqual(type(e), expected)
